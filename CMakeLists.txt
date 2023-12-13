@@ -13,12 +13,12 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(Construction_Minimal_Disjunctive_Normal_Form main.cpp
-        Constructor.cpp
-        Constructor.h
-        App.cpp
-        App.h
-        header.h)
+add_executable(Construction_Minimal_Disjunctive_Normal_Form src/main.cpp
+        src/Constructor.cpp
+        src/Constructor.h
+        src/App.cpp
+        src/App.h
+        src/header.h)
 target_link_libraries(Construction_Minimal_Disjunctive_Normal_Form
         Qt::Core
         Qt::Gui
