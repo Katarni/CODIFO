@@ -18,7 +18,9 @@ add_executable(Construction_Minimal_Disjunctive_Normal_Form src/main.cpp
         src/Constructor.h
         src/App.cpp
         src/App.h
-        src/header.h)
+        src/header.h
+        src/Cell.cpp
+        src/Cell.h)
 target_link_libraries(Construction_Minimal_Disjunctive_Normal_Form
         Qt::Core
         Qt::Gui
