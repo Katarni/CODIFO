@@ -18,7 +18,8 @@ class App : public QMainWindow {
   void loadData();
 
  private:
-  std::vector<std::vector<Cell>> table_;
+  std::vector<std::vector<std::string>> string_table_;
+  std::vector<std::vector<Cell>> cell_table_;
   int number_, params_;
 
   // Data Window

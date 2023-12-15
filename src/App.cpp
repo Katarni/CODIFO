@@ -51,6 +51,7 @@ void App::openDataWindow() {
                                 "color: #000;"
                                 "padding-right: 3px;"
                                 "border-radius: 8px; }");
+  connect(submit_button_, SIGNAL(released()), this, SLOT(submitData()));
 
   data_load_ = new QPushButton(data_window_);
   data_load_->resize(72, 30);
@@ -60,12 +61,40 @@ void App::openDataWindow() {
                                 "color: #000;"
                                 "padding-right: 3px;"
                                 "border-radius: 8px; }");
+  connect(data_load_, SIGNAL(released()), this, SLOT(loadData()));
 
   data_window_->show();
 }
 
 void App::loadData() {
+  number_edit_->clear();
+  params_edit_->clear();
 
+  QString file = QFileDialog::getOpenFileName(nullptr, "Выбрать txt файл", "", "*.txt");
+  QFile in(file);
+  if (!in.open(QIODevice::ReadOnly)) return;
+  QString data = in.readAll();
+  in.close();
+
+  QStringList text = data.split(QRegularExpression("[\n]"), Qt::SkipEmptyParts);
+  if (text.empty() || text[0].isEmpty()) {
+    number_edit_->setText(("Empty file"));
+  }
+  QStringList words_first_line = text[0].split(QRegularExpression("[ ]"), Qt::SkipEmptyParts);
+  if (words_first_line.size() > 2) {
+    number_edit_->setText(words_first_line[0]);
+    params_edit_->setText(words_first_line[1]);
+    return;
+  }
+
+  if (text.size() < 2) {
+    number_edit_->setText(("Not enough numbers in the file"));
+    return;
+  }
+
+  QStringList words_second_line = text[0].split(QRegularExpression("[ ]"), Qt::SkipEmptyParts);
+  number_edit_->setText(words_first_line[0]);
+  params_edit_->setText(words_second_line[0]);
 }
 
 void App::submitData() {

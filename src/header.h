@@ -16,3 +16,6 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QLineEdit>
+#include <QFileDialog>
+#include <QFile>
+#include <QRegularExpression>
