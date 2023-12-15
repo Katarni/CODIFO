@@ -13,7 +13,9 @@ class App : public QMainWindow {
   App();
 
  private slots:
-  void sendData();
+  // Data Window
+  void submitData();
+  void loadData();
 
  private:
   std::vector<std::vector<Cell>> table_;
@@ -21,9 +23,11 @@ class App : public QMainWindow {
 
   // Data Window
   QWidget* data_window_;
-  QLabel* date_header;
-  QLabel* data_description;
+  QLabel* data_header;
   QLineEdit* number_edit_;
   QLineEdit* params_edit_;
-  QPushButton* send_button_;
+  QPushButton* submit_button_;
+  QPushButton* data_load_;
+
+  void openDataWindow();
 };
