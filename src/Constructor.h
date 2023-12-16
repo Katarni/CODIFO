@@ -3,11 +3,11 @@
 //
 
 #pragma once
-#include "header.h"
+#include "Cell.h"
 
 class Constructor {
  public:
-  static std::vector<std::vector<std::string>> constructTable(int number, int params);
+  static std::vector<std::vector<Cell>> constructTable(const std::string& number, int params);
 
  private:
   static std::string toLetterForm(const std::string& str);
@@ -16,4 +16,8 @@ class Constructor {
   static void unitAdditionBinary(std::string& num);
 
   static bool isIncrease(const std::string& str);
+
+  static char divisionByTwo(std::string& num);
+
+  static std::string toBinaryString(std::string num);
 };

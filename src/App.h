@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "Cell.h"
+#include "Constructor.h"
 
 
 class App : public QMainWindow {
@@ -17,10 +17,14 @@ class App : public QMainWindow {
   void submitData();
   void loadData();
 
+  // Constructor Window
+  void nextStep();
+  void prevStep();
+
  private:
-  std::vector<std::vector<std::string>> string_table_;
-  std::vector<std::vector<Cell>> cell_table_;
-  int number_, params_;
+  std::vector<std::vector<Cell>> table_;
+  std::string number_;
+  int params_;
 
   // Data Window
   QWidget* data_window_;
@@ -31,4 +35,16 @@ class App : public QMainWindow {
   QPushButton* data_load_;
 
   void openDataWindow();
+  void closeDataWindow();
+
+  // Constructor Window
+  QWidget* constructor_window_;
+  QWidget* constructor_bar_;
+  QPushButton* forward_button_;
+  QPushButton* back_button_;
+  QLabel* constructor_number_holder;
+  QLabel* constructor_params_holder;
+
+  void openConstructorWindow();
+  void closeConstructorWindow();
 };

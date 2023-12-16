@@ -4,18 +4,23 @@
 
 #include "Constructor.h"
 
-std::vector<std::vector<std::string>> Constructor::constructTable(int number, int params) {
-  std::vector<std::vector<std::string>> table((1<<params) + 1, std::vector<std::string>(1<<params));
-  table[0][0] = "f";
+std::vector<std::vector<Cell>> Constructor::constructTable(const std::string& number, int params) {
+  std::vector<std::vector<Cell>> table((1<<params) + 1, std::vector<Cell>(1<<params));
+  table[0][0] = Cell("f");
   std::string str = "0";
   for (int i = 1; i < table[0].size(); ++i) {
     unitAdditionParams(str, params + 1);
-    table[0][i] = toLetterForm(str);
+    table[0][i] = Cell(toLetterForm(str));
   }
 
-  for (int i = table.size() - 1; i > 0; --i) {
-    table[i][0] = std::to_string(number % 2);
-    number /= 2;
+  std::string binary_number = Constructor::toBinaryString(number);
+
+  for (int i = (int)table.size() - 1, j = (int)binary_number.size() - 1; i > 0; --i, --j) {
+    if (j >= 0) {
+      table[i][0] = Cell(std::to_string(binary_number[j] - '0'));
+    } else {
+      table[i][0] = Cell("0");
+    }
   }
 
   str.resize(params);
@@ -25,7 +30,7 @@ std::vector<std::vector<std::string>> Constructor::constructTable(int number, in
 
   for (int i = 1; i < table.size(); ++i) {
     for (int j = 1; j < params + 1; ++j) {
-      table[i][j] = str[j - 1];
+      table[i][j] = Cell(std::to_string(str[j - 1] - '0'));
     }
     unitAdditionBinary(str);
   }
@@ -83,4 +88,28 @@ void Constructor::unitAdditionBinary(std::string &num) {
     }
     num[i] = '0';
   }
+}
+
+std::string Constructor::toBinaryString(std::string num) {
+  std::reverse(num.begin(), num.end());
+
+  std::string binary;
+  while (num[0] != '0' || num.size() != 1) {
+    char carry = divisionByTwo(num);
+    binary.insert(binary.begin(), carry);
+  }
+  return binary;
+}
+
+char Constructor::divisionByTwo(std::string &num) {
+  char carry = 0;
+  for (int i = (int)num.size() - 1; i >= 0; --i) {
+    char cur = num[i] - '0' + carry * 10;
+    num[i] = char(cur) / 2 + '0';
+    carry = cur % 2;
+  }
+  while (num.size() > 1 && num.back() == '0') {
+    num.pop_back();
+  }
+  return carry + '0';
 }
