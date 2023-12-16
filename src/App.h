@@ -42,6 +42,8 @@ class App : public QMainWindow {
   QWidget* constructor_bar_;
   QPushButton* forward_button_;
   QPushButton* back_button_;
+  QLabel* constructor_number_holder;
+  QLabel* constructor_params_holder;
 
   void openConstructorWindow();
   void closeConstructorWindow();

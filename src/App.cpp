@@ -5,8 +5,7 @@
 #include "App.h"
 
 App::App() {
-//  openDataWindow();
-  openConstructorWindow();
+  openDataWindow();
 }
 
 void App::openDataWindow() {
@@ -180,6 +179,26 @@ void App::openConstructorWindow() {
                               "border-radius: 8px; }");
   connect(forward_button_, SIGNAL(released()), this, SLOT(nextStep()));
 
+  constructor_number_holder = new QLabel(constructor_bar_);
+  constructor_number_holder->resize(200, 20);
+  constructor_number_holder->move(100, 17);
+
+  QFont params_font = constructor_number_holder->font();
+  params_font.setPixelSize(15);
+
+  constructor_number_holder->setFont(params_font);
+  constructor_number_holder->setText("Function number: " + QString::fromStdString(number_));
+  constructor_number_holder->setStyleSheet("QLabel { border: none;"
+                                           "color: #000; }");
+
+  constructor_params_holder = new QLabel(constructor_bar_);
+  constructor_params_holder->resize(200, 20);
+  constructor_params_holder->move(100, 37);
+  constructor_params_holder->setFont(params_font);
+  constructor_params_holder->setText("Number of parameters: " + QString::fromStdString(std::to_string(params_)));
+  constructor_params_holder->setStyleSheet("QLabel { border: none;"
+                                           "color: #000; }");
+
   constructor_window_->show();
 }
 
@@ -188,6 +207,8 @@ void App::closeConstructorWindow() {
 
   delete forward_button_;
   delete back_button_;
+  delete constructor_number_holder;
+  delete constructor_params_holder;
   delete constructor_bar_;
   delete constructor_window_;
 }
