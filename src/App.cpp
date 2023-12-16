@@ -5,7 +5,8 @@
 #include "App.h"
 
 App::App() {
-  openDataWindow();
+//  openDataWindow();
+  openConstructorWindow();
 }
 
 void App::openDataWindow() {
@@ -97,6 +98,61 @@ void App::loadData() {
   params_edit_->setText(words_second_line[0]);
 }
 
-void App::submitData() {
+void App::closeDataWindow() {
+  data_window_->hide();
 
+  delete data_load_;
+  delete submit_button_;
+  delete data_header;
+  delete number_edit_;
+  delete params_edit_;
+  delete data_window_;
+}
+
+void App::submitData() {
+  std::string number = number_edit_->text().toStdString();
+  std::string params = params_edit_->text().toStdString();
+
+  number_edit_->clear();
+  params_edit_->clear();
+
+  if (number.empty()) {
+    number_edit_->setText("The number is empty");
+    return;
+  }
+
+  if (params.empty()) {
+    params_edit_->setText("Number of parameters is empty");
+    return;
+  }
+
+  for (char let : number) {
+    if (let < '0' || let > '9') {
+      number_edit_->setText("The number is incorrect");
+      return;
+    }
+  }
+
+  for (char let : params) {
+    if (let < '0' || let > '9') {
+      params_edit_->setText("Number of parameters is incorrect");
+      return;
+    }
+  }
+
+  number_ = number;
+  params_ = std::stoi(params);
+
+  closeDataWindow();
+  openConstructorWindow();
+}
+
+void App::openConstructorWindow() {
+  constructor_window_ = new QWidget();
+  constructor_window_->setFixedSize(1200, 700);
+  constructor_window_->setStyleSheet("QWidget { background: #fff; }");
+
+
+
+  constructor_window_->show();
 }
