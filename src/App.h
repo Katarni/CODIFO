@@ -17,6 +17,10 @@ class App : public QMainWindow {
   void submitData();
   void loadData();
 
+  // Constructor Window
+  void nextStep();
+  void prevStep();
+
  private:
   std::vector<std::vector<Cell>> table_;
   std::string number_;
@@ -35,6 +39,10 @@ class App : public QMainWindow {
 
   // Constructor Window
   QWidget* constructor_window_;
+  QWidget* constructor_bar_;
+  QPushButton* forward_button_;
+  QPushButton* back_button_;
 
   void openConstructorWindow();
+  void closeConstructorWindow();
 };

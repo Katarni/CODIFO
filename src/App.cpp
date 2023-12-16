@@ -152,7 +152,46 @@ void App::openConstructorWindow() {
   constructor_window_->setFixedSize(1200, 700);
   constructor_window_->setStyleSheet("QWidget { background: #fff; }");
 
+  constructor_bar_ = new QWidget(constructor_window_);
+  constructor_bar_->setFixedSize(1200, 75);
+  constructor_bar_->setStyleSheet("QWidget { border-bottom-left-radius: 8px;"
+                                  "border-bottom-right-radius: 8px;"
+                                  "border-bottom: 3px solid #ebd7f5; }");
 
+  back_button_ = new QPushButton(constructor_bar_);
+  back_button_->resize(60, 31);
+  back_button_->move(15, 22);
+  back_button_->setText("<- Back");
+  back_button_->setStyleSheet("QPushButton { background: #ebd7f5;"
+                              "color: #000;"
+                              "padding-top: 1px;"
+                              "padding-right: 3px;"
+                              "border-radius: 8px; }");
+  connect(back_button_, SIGNAL(released()), this, SLOT(prevStep()));
+
+  forward_button_ = new QPushButton(constructor_bar_);
+  forward_button_->resize(60, 31);
+  forward_button_->move(1125, 22);
+  forward_button_->setText("Next ->");
+  forward_button_->setStyleSheet("QPushButton { background: #ebd7f5;"
+                              "color: #000;"
+                              "padding-top: 1px;"
+                              "padding-right: 3px;"
+                              "border-radius: 8px; }");
+  connect(forward_button_, SIGNAL(released()), this, SLOT(nextStep()));
 
   constructor_window_->show();
 }
+
+void App::closeConstructorWindow() {
+  constructor_window_->hide();
+
+  delete forward_button_;
+  delete back_button_;
+  delete constructor_bar_;
+  delete constructor_window_;
+}
+
+void App::nextStep() {}
+
+void App::prevStep() {}
