@@ -20,3 +20,5 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QRegularExpression>
+#include <QScrollArea>
+#include <QPalette>

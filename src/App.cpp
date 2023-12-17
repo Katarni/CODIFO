@@ -199,18 +199,47 @@ void App::openConstructorWindow() {
   constructor_params_holder->setStyleSheet("QLabel { border: none;"
                                            "color: #000; }");
 
-  constructor_window_->show();
+  createTable();
+  showTable();
 }
 
 void App::closeConstructorWindow() {
   constructor_window_->hide();
 
+  for (int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      delete cells_[i][j];
+    }
+  }
+
+  delete table_label_;
+  delete table_scroll_area_;
   delete forward_button_;
   delete back_button_;
   delete constructor_number_holder;
   delete constructor_params_holder;
   delete constructor_bar_;
   delete constructor_window_;
+}
+
+void App::createTable() {
+  table_ = Constructor::constructTable(number_, params_);
+
+  cells_.resize(table_.size());
+  for (int i = 0; i < cells_.size(); ++i) {
+    cells_[i].resize(table_[i].size());
+  }
+
+  table_label_ = new QLabel(constructor_window_);
+  table_label_->resize(1150, 575);
+  table_label_->move(25, 100);
+
+  table_scroll_area_ = new QScrollArea();
+  table_scroll_area_->setWidget(table_label_);
+}
+
+void App::showTable() {
+  constructor_window_->show();
 }
 
 void App::nextStep() {}

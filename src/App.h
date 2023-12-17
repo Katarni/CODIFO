@@ -44,7 +44,14 @@ class App : public QMainWindow {
   QPushButton* back_button_;
   QLabel* constructor_number_holder;
   QLabel* constructor_params_holder;
+  QLabel* table_label_;
+  QScrollArea* table_scroll_area_;
+
+  std::vector<std::vector<QLabel*>> cells_;
 
   void openConstructorWindow();
   void closeConstructorWindow();
+
+  void createTable();
+  void showTable();
 };
