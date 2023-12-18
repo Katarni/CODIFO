@@ -234,9 +234,8 @@ void App::createTable() {
   cell_width_ = 10 + 10 * params_;
 
   table_label_ = new QLabel(constructor_window_);
-  table_label_->resize(std::min((int)cells_[0].size() * cell_width_, 1150),
-                       std::min((int)cells_.size() * cell_height_, 575));
-  table_label_->move((1200 - table_label_->width()) / 2, 75 + (625 - table_label_->height()) / 2);
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
 
   table_scroll_area_ = new QScrollArea(constructor_window_);
   table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_, 1150),
