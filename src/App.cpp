@@ -230,12 +230,29 @@ void App::createTable() {
     cells_[i].resize(table_[i].size());
   }
 
-  table_label_ = new QLabel(constructor_window_);
-  table_label_->resize(1150, 575);
-  table_label_->move(25, 100);
+  cell_height_ = 25;
+  cell_width_ = 10 + 10 * params_;
 
-  table_scroll_area_ = new QScrollArea();
-  table_scroll_area_->setWidget(table_label_);
+  table_label_ = new QLabel(constructor_window_);
+  table_label_->resize(std::min((int)cells_[0].size() * cell_width_, 1150),
+                       std::min((int)cells_.size() * cell_height_, 575));
+  table_label_->move((1200 - table_label_->width()) / 2, 75 + (625 - table_label_->height()) / 2);
+
+  for (int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      cells_[i][j] = new QLabel(table_label_);
+      cells_[i][j]->resize(cell_width_, cell_height_);
+      cells_[i][j]->move(cell_width_ * j, cell_height_ * i);
+      cells_[i][j]->setText(QString::fromStdString(table_[i][j].getNum()));
+      cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                  "color: #000; }");
+      cells_[i][j]->setAlignment(Qt::AlignCenter);
+    }
+  }
+
+// не работает, убирает всю таблицу
+//  table_scroll_area_ = new QScrollArea();
+//  table_scroll_area_->setWidget(table_label_);
 }
 
 void App::showTable() {
