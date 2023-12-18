@@ -238,8 +238,8 @@ void App::createTable() {
                        (int)cells_.size() * cell_height_);
 
   table_scroll_area_ = new QScrollArea(constructor_window_);
-  table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_, 1150),
-                             std::min((int)cells_.size() * cell_height_, 575));
+  table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_ + 3, 1150),
+                             std::min((int)cells_.size() * cell_height_ + 3, 575));
   table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
   table_scroll_area_->setWidget(table_label_);
 
@@ -248,15 +248,20 @@ void App::createTable() {
       cells_[i][j] = new QLabel(table_label_);
       cells_[i][j]->resize(cell_width_, cell_height_);
       cells_[i][j]->move(cell_width_ * j, cell_height_ * i);
-      cells_[i][j]->setText(QString::fromStdString(table_[i][j].getNum()));
-      cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
-                                  "color: #000; }");
       cells_[i][j]->setAlignment(Qt::AlignCenter);
     }
   }
 }
 
 void App::showTable() {
+  for (int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      cells_[i][j]->setText(QString::fromStdString(table_[i][j].getNum()));
+      cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                  "color: #000; }");
+    }
+  }
+
   constructor_window_->show();
 }
 
