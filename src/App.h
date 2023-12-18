@@ -39,6 +39,7 @@ class App : public QMainWindow {
 
   // Constructor Window
   int cell_width_, cell_height_;
+  int current_date;
   QWidget* constructor_window_;
   QWidget* constructor_bar_;
   QPushButton* forward_button_;

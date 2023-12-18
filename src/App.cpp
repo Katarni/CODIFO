@@ -199,6 +199,8 @@ void App::openConstructorWindow() {
   constructor_params_holder->setStyleSheet("QLabel { border: none;"
                                            "color: #000; }");
 
+  current_date = 0;
+
   createTable();
   showTable();
 }
@@ -242,6 +244,9 @@ void App::createTable() {
                              std::min((int)cells_.size() * cell_height_ + 3, 575));
   table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
   table_scroll_area_->setWidget(table_label_);
+  table_scroll_area_->setStyleSheet("QScrollArea QScrollBar::handle { background: #ebd7f5;"
+                                    "border-radius: 8px; }"
+                                    "QScrollArea QScrollBar { background: #fff; }");
 
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
