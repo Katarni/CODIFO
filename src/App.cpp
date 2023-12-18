@@ -238,6 +238,12 @@ void App::createTable() {
                        std::min((int)cells_.size() * cell_height_, 575));
   table_label_->move((1200 - table_label_->width()) / 2, 75 + (625 - table_label_->height()) / 2);
 
+  table_scroll_area_ = new QScrollArea(constructor_window_);
+  table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_, 1150),
+                             std::min((int)cells_.size() * cell_height_, 575));
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
+  table_scroll_area_->setWidget(table_label_);
+
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j] = new QLabel(table_label_);
@@ -249,10 +255,6 @@ void App::createTable() {
       cells_[i][j]->setAlignment(Qt::AlignCenter);
     }
   }
-
-// не работает, убирает всю таблицу
-//  table_scroll_area_ = new QScrollArea();
-//  table_scroll_area_->setWidget(table_label_);
 }
 
 void App::showTable() {
