@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <set>
 
 // QT
 #include <QApplication>

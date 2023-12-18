@@ -25,6 +25,26 @@ char& Cell::operator[](int idx) {
   return num_[idx];
 }
 
-std::string Cell::getNum() {
+const std::string &Cell::getNum() const {
   return num_;
+}
+
+void Cell::setNum(const std::string &num) {
+  num_ = num;
+}
+
+int Cell::getDate() const {
+  return date_;
+}
+
+void Cell::setDate(int date) {
+  date_ = date;
+}
+
+bool Cell::isDeleted() const {
+  return deleted_;
+}
+
+void Cell::setDeleted(bool deleted) {
+  deleted_ = deleted;
 }

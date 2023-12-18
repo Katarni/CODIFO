@@ -9,6 +9,12 @@ class Constructor {
  public:
   static std::vector<std::vector<Cell>> constructTable(const std::string& number, int params);
 
+  static std::vector<std::pair<int, int>> checkOutZeros(const std::vector<std::vector<Cell>>& table);
+
+  static std::vector<std::pair<int, int>> checkOutDuplicates(const std::vector<std::vector<Cell>>& table);
+
+  static std::vector<std::pair<int, int>> checkOutBiggest(const std::vector<std::vector<Cell>>& table);
+
  private:
   static std::string toLetterForm(const std::string& str);
 

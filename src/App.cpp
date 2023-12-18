@@ -202,7 +202,8 @@ void App::openConstructorWindow() {
   current_date = 0;
 
   createTable();
-  showTable();
+
+  constructor_window_->show();
 }
 
 void App::closeConstructorWindow() {
@@ -254,22 +255,76 @@ void App::createTable() {
       cells_[i][j]->resize(cell_width_, cell_height_);
       cells_[i][j]->move(cell_width_ * j, cell_height_ * i);
       cells_[i][j]->setAlignment(Qt::AlignCenter);
+      cells_[i][j]->setText(QString::fromStdString(table_[i][j].getNum()));
+      cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                  "background: #fff;"
+                                  "color: #000; }");
     }
   }
 }
 
-void App::showTable() {
-  for (int i = 0; i < cells_.size(); ++i) {
+void App::nextStep() {
+  if (current_date == 3) {
+    getAnswer();
+    return;
+  }
+
+  std::vector<std::pair<int, int>> checked;
+  if (current_date == 0) {
+    checked = Constructor::checkOutZeros(table_);
+  } else if (current_date == 1) {
+    checked = Constructor::checkOutDuplicates(table_);
+  } else {
+    checked = Constructor::checkOutBiggest(table_);
+  }
+
+  for(int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
-      cells_[i][j]->setText(QString::fromStdString(table_[i][j].getNum()));
-      cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
-                                  "color: #000; }");
+      if (table_[i][j].isDeleted()) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #fff;"
+                                    "background: #000; }");
+      }
     }
+  }
+
+  ++current_date;
+
+  for (auto pair : checked) {
+    int i = pair.first;
+    int j = pair.second;
+    table_[i][j].setDeleted(true);
+    table_[i][j].setDate(current_date);
+    cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                "color: #000;"
+                                "background: #c92518; }");
   }
 
   constructor_window_->show();
 }
 
-void App::nextStep() {}
+void App::prevStep() {
+  if (current_date == 0) {
+    closeConstructorWindow();
+    openDataWindow();
+    return;
+  }
 
-void App::prevStep() {}
+  for (int i = 1; i < table_.size(); ++i) {
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (current_date - 1 != 0 && table_[i][j].getDate() == current_date - 1) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #000;"
+                                    "background: #c92518; }");
+      } else if (table_[i][j].getDate() == current_date) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "background: #fff;"
+                                    "color: #000; }");
+        table_[i][j].setDate(0);
+      }
+    }
+  }
+  --current_date;
+}
+
+void App::getAnswer() {}

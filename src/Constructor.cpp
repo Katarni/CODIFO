@@ -6,7 +6,7 @@
 
 std::vector<std::vector<Cell>> Constructor::constructTable(const std::string& number, int params) {
   std::vector<std::vector<Cell>> table((1<<params) + 1, std::vector<Cell>(1<<params));
-  table[0][0] = Cell("f");
+  table[0][0] = Cell("func");
   std::string str = "0";
   for (int i = 1; i < table[0].size(); ++i) {
     unitAdditionParams(str, params + 1);
@@ -112,4 +112,46 @@ char Constructor::divisionByTwo(std::string &num) {
     num.pop_back();
   }
   return carry + '0';
+}
+
+std::vector<std::pair<int, int>> Constructor::checkOutZeros(const std::vector<std::vector<Cell>> &table) {
+  std::vector<std::pair<int, int>> checked;
+
+  for (int i = 0; i < table.size(); ++i) {
+    if (table[i][0].getNum() != "0") {
+      continue;
+    }
+
+    for (int j = 1; j < table[i].size(); ++j) {
+      if (table[i][j].isDeleted()) {
+        continue;
+      }
+      checked.emplace_back(i, j);
+    }
+  }
+
+  return checked;
+}
+
+std::vector<std::pair<int, int>> Constructor::checkOutDuplicates(const std::vector<std::vector<Cell>> &table) {
+  std::vector<std::pair<int, int>> checked;
+  for (int j = 1; j < table[0].size(); ++j) {
+    std::set<std::string> deleted;
+    for (int i = 1; i < table.size(); ++i) {
+      if (table[i][j].isDeleted()) {
+        deleted.insert(table[i][j].getNum());
+      }
+    }
+
+    for (int i = 1; i < table.size(); ++i) {
+      if (!table[i][j].isDeleted() && deleted.find(table[i][j].getNum()) != deleted.end()) {
+        checked.emplace_back(i, j);
+      }
+    }
+  }
+  return checked;
+}
+
+std::vector<std::pair<int, int>> Constructor::checkOutBiggest(const std::vector<std::vector<Cell>> &table) {
+  return std::vector<std::pair<int, int>>();
 }

@@ -55,5 +55,6 @@ class App : public QMainWindow {
   void closeConstructorWindow();
 
   void createTable();
-  void showTable();
+
+  void getAnswer();
 };
