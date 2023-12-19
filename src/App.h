@@ -34,17 +34,27 @@ class App : public QMainWindow {
   QPushButton* submit_button_;
   QPushButton* data_load_;
 
-  void openDataWindow();
+  void openDataWindow(bool again);
   void closeDataWindow();
 
   // Constructor Window
+  int cell_width_, cell_height_;
+  int current_date;
   QWidget* constructor_window_;
   QWidget* constructor_bar_;
   QPushButton* forward_button_;
   QPushButton* back_button_;
   QLabel* constructor_number_holder;
   QLabel* constructor_params_holder;
+  QLabel* table_label_;
+  QScrollArea* table_scroll_area_;
+
+  std::vector<std::vector<QLabel*>> cells_;
 
   void openConstructorWindow();
   void closeConstructorWindow();
+
+  void createTable();
+
+  void getAnswer();
 };
