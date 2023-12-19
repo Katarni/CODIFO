@@ -34,7 +34,7 @@ class App : public QMainWindow {
   QPushButton* submit_button_;
   QPushButton* data_load_;
 
-  void openDataWindow();
+  void openDataWindow(bool again);
   void closeDataWindow();
 
   // Constructor Window

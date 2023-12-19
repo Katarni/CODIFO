@@ -5,10 +5,10 @@
 #include "App.h"
 
 App::App() {
-  openDataWindow();
+  openDataWindow(false);
 }
 
-void App::openDataWindow() {
+void App::openDataWindow(bool again) {
   data_window_ = new QWidget();
   data_window_->setFixedSize(400, 250);
   data_window_->setStyleSheet("QWidget { background: #fff; }");
@@ -35,7 +35,7 @@ void App::openDataWindow() {
                               "background: #ebd7f5; }");
 
   params_edit_ = new QLineEdit(data_window_);
-  params_edit_->resize(155, 25);
+  params_edit_->resize(350, 25);
   params_edit_->move(25, 120);
   params_edit_->setPlaceholderText("Number of parameters");
   params_edit_->setStyleSheet("QLineEdit { color: #000;"
@@ -62,6 +62,11 @@ void App::openDataWindow() {
                                 "padding-right: 3px;"
                                 "border-radius: 8px; }");
   connect(data_load_, SIGNAL(released()), this, SLOT(loadData()));
+
+  if (again) {
+    number_edit_->setText(QString::fromStdString(number_));
+    params_edit_->setText(QString::fromStdString(std::to_string(params_)));
+  }
 
   data_window_->show();
 }
@@ -306,7 +311,7 @@ void App::nextStep() {
 void App::prevStep() {
   if (current_date == 0) {
     closeConstructorWindow();
-    openDataWindow();
+    openDataWindow(true);
     return;
   }
 
@@ -321,6 +326,7 @@ void App::prevStep() {
                                     "background: #fff;"
                                     "color: #000; }");
         table_[i][j].setDate(0);
+        table_[i][j].setDeleted(false);
       }
     }
   }

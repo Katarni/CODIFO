@@ -26,4 +26,6 @@ class Constructor {
   static char divisionByTwo(std::string& num);
 
   static std::string toBinaryString(std::string num);
+
+  static bool existString(const std::string& str, const std::string& find);
 };
