@@ -270,7 +270,7 @@ void App::createTable() {
 
 void App::nextStep() {
   if (current_date == 3) {
-    showAnswer();
+    calculateAnswer();
     return;
   }
 
@@ -338,28 +338,16 @@ void App::prevStep() {
   --current_date;
 }
 
-void App::showAnswer() {
-  for(int i = 0; i < cells_.size(); ++i) {
-    for (int j = 0; j < cells_[i].size(); ++j) {
-      if (table_[i][j].isDeleted()) {
-        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
-                                    "color: #fff;"
-                                    "background: #000; }");
-      }
-    }
+void App::calculateAnswer() {
+  if (!uniq_vars_.empty() || !answers_.empty()) {
+    showAnswer();
+    return;
   }
 
-  table_label_->resize((int)cells_[0].size() * cell_width_,
-                       (int)cells_.size() * cell_height_);
-
-  table_scroll_area_->resize(table_scroll_area_->width() + 15, 300);
-  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
-
   std::set<std::vector<std::string>> answers;
-  std::vector<std::string> uniq;
 
   for (int i = 1; i < table_.size(); ++i) {
-    if (table_[i][0].getNum() == "0") {
+    if (table_[i][0].getNum() == "0" || table_[i][0].isGot()) {
       table_[i][0].setGot(true);
       continue;
     }
@@ -373,7 +361,7 @@ void App::showAnswer() {
     }
 
     if (cnt_not_del == 1) {
-      uniq.push_back(Constructor::getNormalForm(table_[0][el_idx].getNum(), table_[i][el_idx].getNum()));
+      uniq_vars_.push_back(Constructor::getNormalForm(table_[0][el_idx].getNum(), table_[i][el_idx].getNum()));
       for (int k = 1; k < table_.size(); ++k) {
         if (table_[k][el_idx].getNum() == table_[i][el_idx].getNum()) {
           table_[k][0].setGot(true);
@@ -382,7 +370,31 @@ void App::showAnswer() {
     }
   }
 
-  ++current_date;
+  std::vector<std::pair<int, std::vector<int>>> vars;
+
+  for (int i = 1; i < table_.size(); ++i) {
+    if (table_[i][0].isGot()) {
+      continue;
+    }
+
+    std::vector<int> indexes;
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (!table_[i][j].isDeleted()) {
+        indexes.push_back(j);
+      }
+    }
+
+    vars.emplace_back(i, indexes);
+  }
+
+  for (const auto& pair : vars) {
+    int i = pair.first;
+    for (int j : pair.second) {
+      // как-то запустить полный перебор :(
+    }
+  }
+
+  showAnswer();
 }
 
 void App::hideAnswer() {
@@ -410,4 +422,24 @@ void App::hideAnswer() {
   table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
 
   --current_date;
+}
+
+void App::showAnswer() {
+  for(int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      if (table_[i][j].isDeleted()) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #fff;"
+                                    "background: #000; }");
+      }
+    }
+  }
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(table_scroll_area_->width() + 15, 300);
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
+
+  ++current_date;
 }
