@@ -270,7 +270,7 @@ void App::createTable() {
 
 void App::nextStep() {
   if (current_date == 3) {
-    getAnswer();
+    showAnswer();
     return;
   }
 
@@ -315,6 +315,11 @@ void App::prevStep() {
     return;
   }
 
+  if (current_date == 4) {
+    hideAnswer();
+    return;
+  }
+
   for (int i = 1; i < table_.size(); ++i) {
     for (int j = 1; j < table_[i].size(); ++j) {
       if (current_date - 1 != 0 && table_[i][j].getDate() == current_date - 1) {
@@ -333,4 +338,76 @@ void App::prevStep() {
   --current_date;
 }
 
-void App::getAnswer() {}
+void App::showAnswer() {
+  for(int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      if (table_[i][j].isDeleted()) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #fff;"
+                                    "background: #000; }");
+      }
+    }
+  }
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(table_scroll_area_->width() + 15, 300);
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
+
+  std::set<std::vector<std::string>> answers;
+  std::vector<std::string> uniq;
+
+  for (int i = 1; i < table_.size(); ++i) {
+    if (table_[i][0].getNum() == "0") {
+      table_[i][0].setGot(true);
+      continue;
+    }
+
+    int cnt_not_del = 0, el_idx = 0;
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (!table_[i][j].isDeleted()) {
+        ++cnt_not_del;
+        el_idx = j;
+      }
+    }
+
+    if (cnt_not_del == 1) {
+      uniq.push_back(Constructor::getNormalForm(table_[0][el_idx].getNum(), table_[i][el_idx].getNum()));
+      for (int k = 1; k < table_.size(); ++k) {
+        if (table_[k][el_idx].getNum() == table_[i][el_idx].getNum()) {
+          table_[k][0].setGot(true);
+        }
+      }
+    }
+  }
+
+  ++current_date;
+}
+
+void App::hideAnswer() {
+  for (int i = 1; i < table_.size(); ++i) {
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (current_date - 1 != 0 && table_[i][j].getDate() == current_date - 1) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #000;"
+                                    "background: #c92518; }");
+      } else if (table_[i][j].getDate() == current_date) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "background: #fff;"
+                                    "color: #000; }");
+        table_[i][j].setDate(0);
+        table_[i][j].setDeleted(false);
+      }
+    }
+  }
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_ + 3, 1150),
+                             std::min((int)cells_.size() * cell_height_ + 3, 575));
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
+
+  --current_date;
+}

@@ -187,3 +187,16 @@ bool Constructor::existString(const std::string &str, const std::string &find) {
   }
   return false;
 }
+
+std::string Constructor::getNormalForm(const std::string &params, const std::string &values) {
+  std::string normal;
+  std::string minus = "not ";
+  for (int i = 0; i < params.size(); ++i) {
+    if (values[i] == '0') {
+      normal.insert(normal.end(), minus.begin(), minus.end());
+    }
+    normal.push_back(params[i]);
+    normal.push_back(' ');
+  }
+  return normal;
+}

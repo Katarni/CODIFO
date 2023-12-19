@@ -30,8 +30,12 @@ class Cell {
 
   void setDeleted(bool deleted);
 
+  bool isGot() const;
+
+  void setGot(bool got);
+
  private:
   std::string num_;
   int date_;
-  bool deleted_;
+  bool deleted_, got_;
 };

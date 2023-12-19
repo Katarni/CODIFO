@@ -15,6 +15,8 @@ class Constructor {
 
   static std::vector<std::pair<int, int>> checkOutBiggest(const std::vector<std::vector<Cell>>& table);
 
+  static std::string getNormalForm(const std::string& params, const std::string& values);
+
  private:
   static std::string toLetterForm(const std::string& str);
 

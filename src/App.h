@@ -56,5 +56,6 @@ class App : public QMainWindow {
 
   void createTable();
 
-  void getAnswer();
+  void showAnswer();
+  void hideAnswer();
 };
