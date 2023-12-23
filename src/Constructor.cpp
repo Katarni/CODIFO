@@ -161,7 +161,7 @@ std::vector<std::pair<int, int>> Constructor::checkOutBiggest(const std::vector<
         continue;
       }
       for (const std::string& small : smaller) {
-        if (existString(table[i][j].getNum(), small)) {
+        if (existString(table[i][j].getNum(), small) && table[i][j].getNum().size() != small.size()) {
           checked.emplace_back(i, j);
           break;
         }
@@ -200,3 +200,43 @@ std::string Constructor::getNormalForm(const std::string &params, const std::str
   }
   return normal;
 }
+
+void Constructor::getAns(const std::vector<std::pair<int, std::vector<int>>> &vars, int row, int col,
+                         const std::vector<std::vector<Cell>> &table, std::set<int> got,
+                         std::vector<std::string> current,
+                         std::set<std::vector<std::string>> &answers) {
+
+  current.push_back(Constructor::getNormalForm(table[0][col].getNum(), table[row][col].getNum()));
+  Constructor::getAll(row, col, table, got);
+
+  int cnt = 0;
+  for (const auto& pair : vars) {
+    if (got.find(pair.first) != got.end()) {
+      ++cnt;
+    }
+  }
+
+  if (cnt == vars.size()) {
+    std::sort(current.begin(), current.end());
+    answers.insert(current);
+    return;
+  }
+
+  for (const auto& pair : vars) {
+    int i = pair.first;
+    if (got.find(i) == got.end()) {
+      for (int j : pair.second) {
+        getAns(vars, i, j, table, got, current, answers);
+      }
+    }
+  }
+}
+
+void Constructor::getAll(int i, int j, const std::vector<std::vector<Cell>> &table, std::set<int>& got) {
+  for (int k = 1; k < table.size(); ++k) {
+    if (table[k][j].getNum() == table[i][j].getNum()) {
+      got.insert(k);
+    }
+  }
+}
+

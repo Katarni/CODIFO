@@ -17,6 +17,13 @@ class Constructor {
 
   static std::string getNormalForm(const std::string& params, const std::string& values);
 
+  static void getAns(const std::vector<std::pair<int, std::vector<int>>> &vars, int row, int col,
+                     const std::vector<std::vector<Cell>> &table, std::set<int> got,
+                     std::vector<std::string> current,
+                     std::set<std::vector<std::string>> &answers);
+
+  static void getAll(int i, int j, const std::vector<std::vector<Cell>> &table, std::set<int>& got);
+
  private:
   static std::string toLetterForm(const std::string& str);
 

@@ -344,8 +344,6 @@ void App::calculateAnswer() {
     return;
   }
 
-  std::set<std::vector<std::string>> answers;
-
   for (int i = 1; i < table_.size(); ++i) {
     if (table_[i][0].getNum() == "0" || table_[i][0].isGot()) {
       table_[i][0].setGot(true);
@@ -389,10 +387,12 @@ void App::calculateAnswer() {
 
   for (const auto& pair : vars) {
     int i = pair.first;
-    for (int j : pair.second) {
-      // как-то запустить полный перебор :(
+    for (int j: pair.second) {
+      Constructor::getAns(vars, i, j, table_, std::set<int>(), std::vector<std::string>(0), answers_);
     }
   }
+
+  std::sort(uniq_vars_.begin(), uniq_vars_.end());
 
   showAnswer();
 }
