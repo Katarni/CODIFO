@@ -422,6 +422,9 @@ void App::hideAnswer() {
   table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
 
   --current_date;
+
+  ans_browser_->hide();
+  delete ans_browser_;
 }
 
 void App::showAnswer() {
@@ -442,4 +445,33 @@ void App::showAnswer() {
   table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
 
   ++current_date;
+
+  ans_browser_ = new QTextBrowser(constructor_window_);
+  ans_browser_->move((1200 - table_scroll_area_->width()) / 2, 425);
+  ans_browser_->resize(table_scroll_area_->width(), 225);
+  ans_browser_->setStyleSheet("QTextBrowser { background: #fff;"
+                              "border: 1px solid #ebd7f5;"
+                              "color: #000;"
+                              "border-radius: 5px;"
+                              "padding: 5px; }");
+
+  std::string ans;
+  std::string sep = " | ";
+  for (auto it = answers_.begin(); it != answers_.end(); ++it) {
+    for (const auto& uniq : uniq_vars_) {
+      ans.insert(ans.end(), uniq.begin(), uniq.end());
+      ans.insert(ans.end(), sep.begin(), sep.end());
+    }
+
+    for (const auto& str : *it) {
+      ans.insert(ans.end(), str.begin(), str.end());
+      ans.insert(ans.end(), sep.begin(), sep.end());
+    }
+
+    ans.resize(ans.size() - 3);
+    ans.push_back('\n');
+  }
+
+  ans_browser_->setText(QString::fromStdString(ans));
+  ans_browser_->show();
 }

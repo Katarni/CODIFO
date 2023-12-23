@@ -50,13 +50,18 @@ class App : public QMainWindow {
   QScrollArea* table_scroll_area_;
 
   std::vector<std::vector<QLabel*>> cells_;
-  std::set<std::vector<std::string>> answers_;
-  std::vector<std::string> uniq_vars_;
 
   void openConstructorWindow();
   void closeConstructorWindow();
 
   void createTable();
+
+  // Get & Show Answer
+
+  std::set<std::vector<std::string>> answers_;
+  std::vector<std::string> uniq_vars_;
+
+  QTextBrowser* ans_browser_;
 
   void calculateAnswer();
   void showAnswer();

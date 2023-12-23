@@ -23,3 +23,4 @@
 #include <QRegularExpression>
 #include <QScrollArea>
 #include <QPalette>
+#include <QTextBrowser>
