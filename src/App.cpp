@@ -214,6 +214,9 @@ void App::openConstructorWindow() {
 void App::closeConstructorWindow() {
   constructor_window_->hide();
 
+  answers_.clear();
+  uniq_vars_.clear();
+
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       delete cells_[i][j];
@@ -385,10 +388,11 @@ void App::calculateAnswer() {
     vars.emplace_back(i, indexes);
   }
 
+  int min_len = params_ * vars.size();
   for (const auto& pair : vars) {
     int i = pair.first;
     for (int j: pair.second) {
-      Constructor::getAns(vars, i, j, table_, std::set<int>(), std::vector<std::string>(0), answers_);
+      Constructor::getAns(vars, i, j, table_, std::set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
     }
   }
 

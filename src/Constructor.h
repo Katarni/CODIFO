@@ -20,7 +20,7 @@ class Constructor {
   static void getAns(const std::vector<std::pair<int, std::vector<int>>> &vars, int row, int col,
                      const std::vector<std::vector<Cell>> &table, std::set<int> got,
                      std::vector<std::string> current,
-                     std::set<std::vector<std::string>> &answers);
+                     std::set<std::vector<std::string>> &answers, int& min_len, int crt_len);
 
   static void getAll(int i, int j, const std::vector<std::vector<Cell>> &table, std::set<int>& got);
 

@@ -190,10 +190,9 @@ bool Constructor::existString(const std::string &str, const std::string &find) {
 
 std::string Constructor::getNormalForm(const std::string &params, const std::string &values) {
   std::string normal;
-  std::string minus = "not ";
   for (int i = 0; i < params.size(); ++i) {
     if (values[i] == '0') {
-      normal.insert(normal.end(), minus.begin(), minus.end());
+      normal.push_back('!');
     }
     normal.push_back(params[i]);
     normal.push_back(' ');
@@ -204,31 +203,40 @@ std::string Constructor::getNormalForm(const std::string &params, const std::str
 void Constructor::getAns(const std::vector<std::pair<int, std::vector<int>>> &vars, int row, int col,
                          const std::vector<std::vector<Cell>> &table, std::set<int> got,
                          std::vector<std::string> current,
-                         std::set<std::vector<std::string>> &answers) {
+                         std::set<std::vector<std::string>> &answers, int& min_len, int crt_len) {
 
   current.push_back(Constructor::getNormalForm(table[0][col].getNum(), table[row][col].getNum()));
   Constructor::getAll(row, col, table, got);
+  crt_len += table[0][col].getNum().size();
+
+  if (crt_len > min_len) {
+    return;
+  }
 
   int cnt = 0;
-  for (const auto& pair : vars) {
-    if (got.find(pair.first) != got.end()) {
+
+  for (int k = 0; k < vars.size(); ++k) {
+    auto pair = vars[k];
+    int i = pair.first;
+    if (got.find(i) == got.end()) {
+      for (int j : pair.second) {
+        getAns(vars, i, j, table, got, current, answers, min_len, crt_len);
+      }
+    } else {
       ++cnt;
     }
   }
 
   if (cnt == vars.size()) {
     std::sort(current.begin(), current.end());
+
+    if (crt_len < min_len) {
+      answers.clear();
+    }
+
+    min_len = crt_len;
     answers.insert(current);
     return;
-  }
-
-  for (const auto& pair : vars) {
-    int i = pair.first;
-    if (got.find(i) == got.end()) {
-      for (int j : pair.second) {
-        getAns(vars, i, j, table, got, current, answers);
-      }
-    }
   }
 }
 
