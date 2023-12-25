@@ -164,7 +164,7 @@ void App::openConstructorWindow() {
 
   back_button_ = new QPushButton(constructor_bar_);
   back_button_->resize(60, 31);
-  back_button_->move(15, 22);
+  back_button_->move(1055, 22);
   back_button_->setText("<- Back");
   back_button_->setStyleSheet("QPushButton { background: #ebd7f5;"
                               "color: #000;"
@@ -186,7 +186,7 @@ void App::openConstructorWindow() {
 
   constructor_number_holder = new QLabel(constructor_bar_);
   constructor_number_holder->resize(200, 20);
-  constructor_number_holder->move(100, 17);
+  constructor_number_holder->move(20, 17);
 
   QFont params_font = constructor_number_holder->font();
   params_font.setPixelSize(15);
@@ -198,11 +198,23 @@ void App::openConstructorWindow() {
 
   constructor_params_holder = new QLabel(constructor_bar_);
   constructor_params_holder->resize(200, 20);
-  constructor_params_holder->move(100, 37);
+  constructor_params_holder->move(20, 37);
   constructor_params_holder->setFont(params_font);
   constructor_params_holder->setText("Number of parameters: " + QString::fromStdString(std::to_string(params_)));
   constructor_params_holder->setStyleSheet("QLabel { border: none;"
                                            "color: #000; }");
+
+  new_func_btn_ = new QPushButton(constructor_bar_);
+  new_func_btn_->resize(60, 31);
+  new_func_btn_->move(std::max(constructor_number_holder->width(),
+                               constructor_params_holder->width()) + 15, 22);
+  new_func_btn_->setText("New +");
+  new_func_btn_->setStyleSheet("QPushButton { background: #ebd7f5;"
+                               "color: #000;"
+                               "padding-top: 1px;"
+                               "padding-right: 3px;"
+                               "border-radius: 8px; }");
+  connect(new_func_btn_, SIGNAL(released()), this, SLOT(newFunc()));
 
   current_date = 0;
 
@@ -214,12 +226,16 @@ void App::openConstructorWindow() {
 void App::closeConstructorWindow() {
   constructor_window_->hide();
 
+  answers_.clear();
+  uniq_vars_.clear();
+
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       delete cells_[i][j];
     }
   }
 
+  delete new_func_btn_;
   delete table_label_;
   delete table_scroll_area_;
   delete forward_button_;
@@ -270,7 +286,11 @@ void App::createTable() {
 
 void App::nextStep() {
   if (current_date == 3) {
-    getAnswer();
+    calculateAnswer();
+    return;
+  }
+
+  if (current_date > 3) {
     return;
   }
 
@@ -315,6 +335,11 @@ void App::prevStep() {
     return;
   }
 
+  if (current_date == 4) {
+    hideAnswer();
+    return;
+  }
+
   for (int i = 1; i < table_.size(); ++i) {
     for (int j = 1; j < table_[i].size(); ++j) {
       if (current_date - 1 != 0 && table_[i][j].getDate() == current_date - 1) {
@@ -333,4 +358,149 @@ void App::prevStep() {
   --current_date;
 }
 
-void App::getAnswer() {}
+void App::calculateAnswer() {
+  if (!uniq_vars_.empty() || !answers_.empty()) {
+    showAnswer();
+    return;
+  }
+
+  for (int i = 1; i < table_.size(); ++i) {
+    if (table_[i][0].getNum() == "0" || table_[i][0].isGot()) {
+      table_[i][0].setGot(true);
+      continue;
+    }
+
+    int cnt_not_del = 0, el_idx = 0;
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (!table_[i][j].isDeleted()) {
+        ++cnt_not_del;
+        el_idx = j;
+      }
+    }
+
+    if (cnt_not_del == 1) {
+      uniq_vars_.push_back(Constructor::getNormalForm(table_[0][el_idx].getNum(), table_[i][el_idx].getNum()));
+      for (int k = 1; k < table_.size(); ++k) {
+        if (table_[k][el_idx].getNum() == table_[i][el_idx].getNum()) {
+          table_[k][0].setGot(true);
+        }
+      }
+    }
+  }
+
+  std::vector<std::pair<int, std::vector<int>>> vars;
+
+  for (int i = 1; i < table_.size(); ++i) {
+    if (table_[i][0].isGot()) {
+      continue;
+    }
+
+    std::vector<int> indexes;
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (!table_[i][j].isDeleted()) {
+        indexes.push_back(j);
+      }
+    }
+
+    vars.emplace_back(i, indexes);
+  }
+
+  int min_len = params_ * vars.size();
+  for (const auto& pair : vars) {
+    int i = pair.first;
+    for (int j: pair.second) {
+      Constructor::getAns(vars, i, j, table_, std::unordered_set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
+    }
+  }
+
+  std::sort(uniq_vars_.begin(), uniq_vars_.end());
+
+  showAnswer();
+}
+
+void App::hideAnswer() {
+  for (int i = 1; i < table_.size(); ++i) {
+    for (int j = 1; j < table_[i].size(); ++j) {
+      if (current_date - 1 != 0 && table_[i][j].getDate() == current_date - 1) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #000;"
+                                    "background: #c92518; }");
+      } else if (table_[i][j].getDate() == current_date) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "background: #fff;"
+                                    "color: #000; }");
+        table_[i][j].setDate(0);
+        table_[i][j].setDeleted(false);
+      }
+    }
+  }
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(std::min((int)cells_[0].size() * cell_width_ + 3, 1150),
+                             std::min((int)cells_.size() * cell_height_ + 3, 575));
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 75 + (625 - table_scroll_area_->height()) / 2);
+
+  --current_date;
+
+  ans_browser_->hide();
+  delete ans_browser_;
+}
+
+void App::showAnswer() {
+  for(int i = 0; i < cells_.size(); ++i) {
+    for (int j = 0; j < cells_[i].size(); ++j) {
+      if (table_[i][j].isDeleted()) {
+        cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
+                                    "color: #fff;"
+                                    "background: #000; }");
+      }
+    }
+  }
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(table_scroll_area_->width() + 15, 300);
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
+
+  ++current_date;
+
+  ans_browser_ = new QTextBrowser(constructor_window_);
+  ans_browser_->move((1200 - table_scroll_area_->width()) / 2, 425);
+  ans_browser_->resize(table_scroll_area_->width(), 225);
+  ans_browser_->setStyleSheet("QTextBrowser { background: #fff;"
+                              "border: 1px solid #ebd7f5;"
+                              "color: #000;"
+                              "border-radius: 5px;"
+                              "padding: 5px; }"
+                              "QTextBrowser QScrollBar::handle { background: #ebd7f5;"
+                              "border-radius: 8px; }"
+                              "QTextBrowser QScrollBar { background: #fff; }");
+
+  std::string ans;
+  std::string sep = " | ";
+  for (auto it = answers_.begin(); it != answers_.end(); ++it) {
+    for (const auto& uniq : uniq_vars_) {
+      ans.insert(ans.end(), uniq.begin(), uniq.end());
+      ans.insert(ans.end(), sep.begin(), sep.end());
+    }
+
+    for (const auto& str : *it) {
+      ans.insert(ans.end(), str.begin(), str.end());
+      ans.insert(ans.end(), sep.begin(), sep.end());
+    }
+
+    ans.resize(ans.size() - 3);
+    ans.push_back('\n');
+  }
+
+  ans_browser_->setText(QString::fromStdString(ans));
+  ans_browser_->show();
+}
+
+void App::newFunc() {
+  closeConstructorWindow();
+  openDataWindow(false);
+}

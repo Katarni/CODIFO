@@ -48,3 +48,11 @@ bool Cell::isDeleted() const {
 void Cell::setDeleted(bool deleted) {
   deleted_ = deleted;
 }
+
+bool Cell::isGot() const {
+  return got_;
+}
+
+void Cell::setGot(bool got) {
+  got_ = got;
+}
