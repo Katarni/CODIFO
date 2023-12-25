@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iostream>
 #include <set>
+#include <unordered_set>
 
 // QT
 #include <QApplication>

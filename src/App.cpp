@@ -164,7 +164,7 @@ void App::openConstructorWindow() {
 
   back_button_ = new QPushButton(constructor_bar_);
   back_button_->resize(60, 31);
-  back_button_->move(15, 22);
+  back_button_->move(1055, 22);
   back_button_->setText("<- Back");
   back_button_->setStyleSheet("QPushButton { background: #ebd7f5;"
                               "color: #000;"
@@ -186,7 +186,7 @@ void App::openConstructorWindow() {
 
   constructor_number_holder = new QLabel(constructor_bar_);
   constructor_number_holder->resize(200, 20);
-  constructor_number_holder->move(100, 17);
+  constructor_number_holder->move(20, 17);
 
   QFont params_font = constructor_number_holder->font();
   params_font.setPixelSize(15);
@@ -198,11 +198,23 @@ void App::openConstructorWindow() {
 
   constructor_params_holder = new QLabel(constructor_bar_);
   constructor_params_holder->resize(200, 20);
-  constructor_params_holder->move(100, 37);
+  constructor_params_holder->move(20, 37);
   constructor_params_holder->setFont(params_font);
   constructor_params_holder->setText("Number of parameters: " + QString::fromStdString(std::to_string(params_)));
   constructor_params_holder->setStyleSheet("QLabel { border: none;"
                                            "color: #000; }");
+
+  new_func_btn_ = new QPushButton(constructor_bar_);
+  new_func_btn_->resize(60, 31);
+  new_func_btn_->move(std::max(constructor_number_holder->width(),
+                               constructor_params_holder->width()) + 15, 22);
+  new_func_btn_->setText("New +");
+  new_func_btn_->setStyleSheet("QPushButton { background: #ebd7f5;"
+                               "color: #000;"
+                               "padding-top: 1px;"
+                               "padding-right: 3px;"
+                               "border-radius: 8px; }");
+  connect(new_func_btn_, SIGNAL(released()), this, SLOT(newFunc()));
 
   current_date = 0;
 
@@ -223,6 +235,7 @@ void App::closeConstructorWindow() {
     }
   }
 
+  delete new_func_btn_;
   delete table_label_;
   delete table_scroll_area_;
   delete forward_button_;
@@ -392,7 +405,7 @@ void App::calculateAnswer() {
   for (const auto& pair : vars) {
     int i = pair.first;
     for (int j: pair.second) {
-      Constructor::getAns(vars, i, j, table_, std::set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
+      Constructor::getAns(vars, i, j, table_, std::unordered_set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
     }
   }
 
@@ -457,7 +470,10 @@ void App::showAnswer() {
                               "border: 1px solid #ebd7f5;"
                               "color: #000;"
                               "border-radius: 5px;"
-                              "padding: 5px; }");
+                              "padding: 5px; }"
+                              "QTextBrowser QScrollBar::handle { background: #ebd7f5;"
+                              "border-radius: 8px; }"
+                              "QTextBrowser QScrollBar { background: #fff; }");
 
   std::string ans;
   std::string sep = " | ";
@@ -478,4 +494,9 @@ void App::showAnswer() {
 
   ans_browser_->setText(QString::fromStdString(ans));
   ans_browser_->show();
+}
+
+void App::newFunc() {
+  closeConstructorWindow();
+  openDataWindow(false);
 }

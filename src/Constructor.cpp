@@ -201,7 +201,7 @@ std::string Constructor::getNormalForm(const std::string &params, const std::str
 }
 
 void Constructor::getAns(const std::vector<std::pair<int, std::vector<int>>> &vars, int row, int col,
-                         const std::vector<std::vector<Cell>> &table, std::set<int> got,
+                         const std::vector<std::vector<Cell>> &table, std::unordered_set<int> got,
                          std::vector<std::string> current,
                          std::set<std::vector<std::string>> &answers, int& min_len, int crt_len) {
 
@@ -240,7 +240,7 @@ void Constructor::getAns(const std::vector<std::pair<int, std::vector<int>>> &va
   }
 }
 
-void Constructor::getAll(int i, int j, const std::vector<std::vector<Cell>> &table, std::set<int>& got) {
+void Constructor::getAll(int i, int j, const std::vector<std::vector<Cell>> &table, std::unordered_set<int>& got) {
   for (int k = 1; k < table.size(); ++k) {
     if (table[k][j].getNum() == table[i][j].getNum()) {
       got.insert(k);

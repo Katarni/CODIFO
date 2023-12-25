@@ -20,6 +20,7 @@ class App : public QMainWindow {
   // Constructor Window
   void nextStep();
   void prevStep();
+  void newFunc();
 
  private:
   std::vector<std::vector<Cell>> table_;
@@ -44,6 +45,7 @@ class App : public QMainWindow {
   QWidget* constructor_bar_;
   QPushButton* forward_button_;
   QPushButton* back_button_;
+  QPushButton* new_func_btn_;
   QLabel* constructor_number_holder;
   QLabel* constructor_params_holder;
   QLabel* table_label_;
