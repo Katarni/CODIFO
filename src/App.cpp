@@ -290,6 +290,10 @@ void App::nextStep() {
     return;
   }
 
+  if (current_date > 3) {
+    return;
+  }
+
   std::vector<std::pair<int, int>> checked;
   if (current_date == 0) {
     checked = Constructor::checkOutZeros(table_);
