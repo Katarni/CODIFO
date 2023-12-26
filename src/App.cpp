@@ -207,7 +207,7 @@ void App::openConstructorWindow() {
   new_func_btn_ = new QPushButton(constructor_bar_);
   new_func_btn_->resize(60, 31);
   new_func_btn_->move(std::max(constructor_number_holder->width(),
-                               constructor_params_holder->width()) + 15, 22);
+                               constructor_params_holder->width()) + 35, 22);
   new_func_btn_->setText("New +");
   new_func_btn_->setStyleSheet("QPushButton { background: #ebd7f5;"
                                "color: #000;"
