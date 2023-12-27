@@ -372,7 +372,7 @@ void App::calculateAnswer() {
   }
 
   if (get_all) {
-    uniq_vars_.push_back("1");
+    uniq_vars_.emplace_back("1");
     showAnswer();
     return;
   }
@@ -420,7 +420,6 @@ void App::calculateAnswer() {
 
   std::sort(uniq_vars_.begin(), uniq_vars_.end());
 
-
   int min_len = params_ * vars.size();
   if (vars.empty()) {
     showAnswer();
@@ -428,7 +427,10 @@ void App::calculateAnswer() {
   }
 
   for (int j : vars[0].second) {
-    Constructor::getAns(vars, vars[0].first, j, table_, std::unordered_set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
+    Constructor::getAns(vars, vars[0].first, j, table_,
+                        std::unordered_set<int>(),
+                        std::vector<std::string>(0),
+                        answers_, min_len, 0);
   }
 
   showAnswer();
@@ -465,7 +467,7 @@ void App::hideAnswer() {
 }
 
 void App::showAnswer() {
-  for(int i = 0; i < cells_.size(); ++i) {
+  for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       if (table_[i][j].isDeleted()) {
         cells_[i][j]->setStyleSheet("QLabel { border: 1px solid #000;"
