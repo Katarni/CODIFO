@@ -364,6 +364,19 @@ void App::calculateAnswer() {
     return;
   }
 
+  bool get_all = true;
+  for (int i = 1; i < table_.size(); ++i) {
+    if (table_[i][0].getNum() != "1") {
+      get_all = false;
+    }
+  }
+
+  if (get_all) {
+    uniq_vars_.push_back("1");
+    showAnswer();
+    return;
+  }
+
   for (int i = 1; i < table_.size(); ++i) {
     if (table_[i][0].getNum() == "0" || table_[i][0].isGot()) {
       table_[i][0].setGot(true);
@@ -411,6 +424,7 @@ void App::calculateAnswer() {
   int min_len = params_ * vars.size();
   if (vars.empty()) {
     showAnswer();
+    return;
   }
 
   for (int j : vars[0].second) {
@@ -461,26 +475,7 @@ void App::showAnswer() {
     }
   }
 
-  table_label_->resize((int)cells_[0].size() * cell_width_,
-                       (int)cells_.size() * cell_height_);
-
-  table_scroll_area_->resize(table_scroll_area_->width() + 15, 300);
-  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
-
-  ++current_date;
-
-  ans_browser_ = new QTextBrowser(constructor_window_);
-  ans_browser_->move((1200 - table_scroll_area_->width()) / 2, 425);
-  ans_browser_->resize(table_scroll_area_->width(), 225);
-  ans_browser_->setStyleSheet("QTextBrowser { background: #fff;"
-                              "border: 1px solid #ebd7f5;"
-                              "color: #000;"
-                              "border-radius: 5px;"
-                              "padding: 5px; }"
-                              "QTextBrowser QScrollBar::handle { background: #ebd7f5;"
-                              "border-radius: 8px; }"
-                              "QTextBrowser QScrollBar { background: #fff; }");
-
+  int endl_cnt = 0;
   std::string ans;
   std::string sep = " | ";
   for (auto it = answers_.begin(); it != answers_.end(); ++it) {
@@ -496,7 +491,41 @@ void App::showAnswer() {
 
     ans.resize(ans.size() - 3);
     ans.push_back('\n');
+    ++endl_cnt;
   }
+
+  if (answers_.empty()) {
+    for (const auto& uniq : uniq_vars_) {
+      ans.insert(ans.end(), uniq.begin(), uniq.end());
+      ans.insert(ans.end(), sep.begin(), sep.end());
+    }
+    ans.resize(ans.size() - 3);
+    ans.push_back('\n');
+    ++endl_cnt;
+  }
+
+  ans.pop_back();
+
+  table_label_->resize((int)cells_[0].size() * cell_width_,
+                       (int)cells_.size() * cell_height_);
+
+  table_scroll_area_->resize(std::min(table_scroll_area_->width(), table_label_->width()) + 3,
+                             std::min(300, table_label_->height() + 3));
+  table_scroll_area_->move((1200 - table_scroll_area_->width()) / 2, 100);
+
+  ++current_date;
+
+  ans_browser_ = new QTextBrowser(constructor_window_);
+  ans_browser_->move((1200 - table_scroll_area_->width()) / 2, 425);
+  ans_browser_->resize(table_scroll_area_->width(), std::min(225, endl_cnt * 17 + 20));
+  ans_browser_->setStyleSheet("QTextBrowser { background: #fff;"
+                              "border: 1px solid #ebd7f5;"
+                              "color: #000;"
+                              "border-radius: 5px;"
+                              "padding: 5px; }"
+                              "QTextBrowser QScrollBar::handle { background: #ebd7f5;"
+                              "border-radius: 8px; }"
+                              "QTextBrowser QScrollBar { background: #fff; }");
 
   ans_browser_->setText(QString::fromStdString(ans));
   ans_browser_->show();
