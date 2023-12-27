@@ -214,7 +214,6 @@ void Constructor::getAns(const std::vector<std::pair<int, std::vector<int>>> &va
   }
 
   int cnt = 0;
-
   for (int k = 0; k < vars.size(); ++k) {
     auto pair = vars[k];
     int i = pair.first;

@@ -405,15 +405,17 @@ void App::calculateAnswer() {
     vars.emplace_back(i, indexes);
   }
 
+  std::sort(uniq_vars_.begin(), uniq_vars_.end());
+
+
   int min_len = params_ * vars.size();
-  for (const auto& pair : vars) {
-    int i = pair.first;
-    for (int j: pair.second) {
-      Constructor::getAns(vars, i, j, table_, std::unordered_set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
-    }
+  if (vars.empty()) {
+    showAnswer();
   }
 
-  std::sort(uniq_vars_.begin(), uniq_vars_.end());
+  for (int j : vars[0].second) {
+    Constructor::getAns(vars, vars[0].first, j, table_, std::unordered_set<int>(), std::vector<std::string>(0), answers_, min_len, 0);
+  }
 
   showAnswer();
 }
